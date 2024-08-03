@@ -1,0 +1,7 @@
+{
+  "title": "客戶端頁面",
+  "counter_one": "已選擇一項",
+  "counter_other": "已選擇{{count}}項",
+  "counter_zero": "未選擇",
+  "back-to-home": "返回首頁"
+}
