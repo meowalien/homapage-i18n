@@ -28,6 +28,7 @@ func SetupRouter() *gin.Engine {
 	i18nGroup := r.Group("/i18n")
 	{
 		i18nGroup.GET("/:lng/:ns", getI18nJSON)
+		//i18nGroup.POST("/:lng/:ns", postI18nJSON)
 	}
 
 	return r

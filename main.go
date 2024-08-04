@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"homapage-i18n/mongodb"
 	"homapage-i18n/routes"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,7 +15,19 @@ import (
 	"time"
 )
 
+func initConfig() {
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
+	viper.AddConfigPath(".")      // optionally look for config in the working directory
+	viper.AutomaticEnv()          // read in environment variables that match
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file: %v", err)
+	}
+}
+
 func main() {
+	initConfig()
 	mongodb.ConnectDB()
 	defer mongodb.DisconnectDB()
 
