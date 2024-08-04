@@ -1,66 +1,52 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"io/ioutil"
+	"github.com/sirupsen/logrus"
+	"homapage-i18n/mongodb"
+	"homapage-i18n/routes"
 	"net/http"
 	"os"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
-	r := gin.Default()
-	err := r.SetTrustedProxies(nil)
-	if err != nil {
-		panic(err)
-	}
-	// Configure CORS
-	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"https://meowalien.com", "http://localhost:3000"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders: []string{"Origin", "Content-Type"},
-	}))
+	mongodb.ConnectDB()
+	defer mongodb.DisconnectDB()
 
-	r.GET("/health", func(c *gin.Context) {
-		c.Status(http.StatusOK)
-	})
+	r := routes.SetupRouter()
 
-	i18nGroup := r.Group("/i18n")
-	{
-		i18nGroup.GET("/:lng/:ns", getI18nJSON)
+	// Create an http.Server
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
 	}
 
-	r.Run(":8080")
-}
+	// Run the server in a goroutine
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			fmt.Printf("listen: %s\n", err)
+		}
+	}()
 
-func getI18nJSON(c *gin.Context) {
-	lng := c.Param("lng")
-	ns := c.Param("ns")
+	// Wait for interrupt signal to gracefully shutdown the server with a timeout of 5 seconds.
+	quit := make(chan os.Signal, 1)
+	// kill (no param) default send syscall.SIGTERM
+	// kill -2 is syscall.SIGINT
+	// kill -9 is syscall.SIGKILL but can't be caught, so don't need to add it
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	logrus.Println("Shutting down server...")
 
-	// Debugging output to verify parameters
-	fmt.Printf("lng: %s, ns: %s\n", lng, ns)
-
-	filePath := fmt.Sprintf("i18n/%s/%s.json", lng, ns)
-	fmt.Println("filePath: ", filePath)
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
-		return
+	// The context is used to inform the server it has 5 seconds to finish the request it is currently handling
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		logrus.Fatal("Server forced to shutdown:", err)
 	}
 
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-		return
-	}
-
-	var jsonData map[string]interface{}
-	if err := json.Unmarshal(data, &jsonData); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse JSON"})
-		return
-	}
-
-	c.JSON(http.StatusOK, jsonData)
+	logrus.Println("Server exiting")
 }
