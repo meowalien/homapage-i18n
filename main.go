@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"homapage-i18n/mongodb"
 	"homapage-i18n/routes"
+	"homapage-i18n/token"
 	"log"
 	"net/http"
 	"os"
@@ -30,12 +31,16 @@ func main() {
 	initConfig()
 	mongodb.ConnectDB()
 	defer mongodb.DisconnectDB()
+	token.InitVerifyKey(viper.GetString("token.publicKeyPath"))
 
 	r := routes.SetupRouter()
-
+	port := viper.GetInt("server.port")
+	if port == 0 {
+		port = 8080
+	}
 	// Create an http.Server
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    fmt.Sprintf(":%d", port),
 		Handler: r,
 	}
 

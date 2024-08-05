@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"homapage-i18n/routes/handlers"
+	"homapage-i18n/routes/middleware"
 	"net/http"
 )
 
@@ -15,11 +16,7 @@ func SetupRouter() *gin.Engine {
 	}
 
 	// Configure CORS
-	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"https://meowalien.com", "http://localhost:3000"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders: []string{"Origin", "Content-Type"},
-	}))
+	r.Use(middleware.Cors())
 
 	r.GET("/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
@@ -27,8 +24,8 @@ func SetupRouter() *gin.Engine {
 
 	i18nGroup := r.Group("/i18n")
 	{
-		i18nGroup.GET("/:lng/:ns", getI18nJSON)
-		//i18nGroup.POST("/:lng/:ns", postI18nJSON)
+		i18nGroup.GET("/:lng/:ns", handlers.GetI18n)
+		i18nGroup.POST("/:lng/:ns", middleware.TokenAuth(), middleware.ParseUserID(), handlers.PostI18n)
 	}
 
 	return r
