@@ -1,14 +1,13 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"homapage-i18n/token"
 	"net/http"
 )
 
-func TokenAuth() gin.HandlerFunc {
+func ParseToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("token")
 		if err != nil {
@@ -24,7 +23,7 @@ func TokenAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		fmt.Println("claims: ", claims)
+		logrus.Debug("claims: ", claims)
 		c.Set("jwt_claims", claims)
 		c.Next()
 	}
