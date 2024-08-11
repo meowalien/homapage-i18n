@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"homapage-i18n/mongodb"
 	"net/http"
 )
@@ -16,22 +17,36 @@ func GetI18n() gin.HandlerFunc {
 		lng := c.Param("lng")
 		ns := c.Param("ns")
 
-		// Debugging output to verify parameters
-		//logrus.Infof("lng: %s, ns: %s\n", lng, ns)
+		collection := mongodb.GetCollection("homepage", "i18n")
 
-		collectionName := fmt.Sprintf("%s-%s", lng, ns)
-		collection := mongodb.GetCollection("i18n", collectionName)
+		documentID := fmt.Sprintf("%s-%s", lng, ns)
 
 		var jsonData map[string]interface{}
-		err := collection.FindOne(context.TODO(), bson.D{}).Decode(&jsonData)
+		projection := bson.M{"_id": 0, "content": 1}
+
+		err := collection.FindOne(context.TODO(), bson.M{"_id": documentID}, options.FindOne().SetProjection(projection)).Decode(&jsonData)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
-				logrus.Infof("No data found in collection %s", collectionName)
+				logrus.Infof("No data found in collection %s", documentID)
 				c.JSON(http.StatusNotFound, gin.H{"error": "Data not found"})
 			} else {
-				logrus.Errorf("Failed to find data in collection %s: %v", collectionName, err)
+				logrus.Errorf("Failed to find document %s: %v", documentID, err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 			}
+			return
+		}
+
+		content := jsonData["content"]
+		if content == nil {
+			logrus.Errorf("Failed to find content in document %s", documentID)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		jsonData, ok := content.(map[string]interface{})
+		if !ok {
+			logrus.Errorf("Failed to convert content to map[string]interface{}")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 			return
 		}
 

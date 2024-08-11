@@ -14,18 +14,12 @@ import (
 func PostI18n() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		//user_id, exist := c.Get("user_id")
-		//if !exist {
-		//	c.JSON(http.StatusUnauthorized, gin.H{"error": "user_id not found"})
-		//	return
-		//}
-		//fmt.Println("user_id", user_id)
-
 		lng := c.Param("lng")
 		ns := c.Param("ns")
 
-		collectionName := fmt.Sprintf("%s-%s", lng, ns)
-		collection := mongodb.GetCollection("i18n", collectionName)
+		collection := mongodb.GetCollection("homepage", "i18n")
+
+		documentID := fmt.Sprintf("%s-%s", lng, ns)
 
 		var jsonData map[string]interface{}
 		if err := c.BindJSON(&jsonData); err != nil {
@@ -39,19 +33,25 @@ func PostI18n() gin.HandlerFunc {
 			delete(jsonData, "_id")
 		}
 
-		filter := bson.D{} // Match all documents
-		opts := options.Replace().SetUpsert(true)
-		replaceResult, err := collection.ReplaceOne(context.TODO(), filter, jsonData, opts)
+		// Wrap jsonData inside "content" field
+		updateData := bson.M{"content": jsonData}
+
+		// Prepare the filter and update for the upsert operation
+		filter := bson.M{"_id": documentID}
+		update := bson.M{"$set": updateData}
+		opts := options.Update().SetUpsert(true)
+
+		updateResult, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 		if err != nil {
-			logrus.Errorf("Failed to replace data in collection %s: %v", collectionName, err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to replace data"})
+			logrus.Errorf("Failed to update data in document %s: %v", documentID, err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update data"})
 			return
 		}
 
-		if replaceResult.MatchedCount > 0 {
-			c.JSON(http.StatusOK, gin.H{"message": "Document replaced", "matchedCount": replaceResult.MatchedCount})
+		if updateResult.MatchedCount > 0 {
+			c.JSON(http.StatusOK, gin.H{"message": "Document updated", "matchedCount": updateResult.MatchedCount})
 		} else {
-			c.JSON(http.StatusCreated, gin.H{"message": "Document inserted", "upsertedId": replaceResult.UpsertedID})
+			c.JSON(http.StatusCreated, gin.H{"message": "Document inserted", "upsertedId": updateResult.UpsertedID})
 		}
 	}
 }
