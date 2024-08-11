@@ -29,6 +29,12 @@ func SetupRouter() *gin.Engine {
 		i18nGroup.POST("/:lng/:ns", middleware.ParseToken(), middleware.CheckTokenRole(role.Admin), middleware.ParseUserID(), handlers.PostI18n())
 		i18nGroup.DELETE("/:lng/:ns", middleware.ParseToken(), middleware.CheckTokenRole(role.Admin), middleware.ParseUserID(), handlers.DeleteI18n())
 	}
+	{
+		listGroup := i18nGroup.Group("/list")
+		{
+			listGroup.GET("/:lng/:ns_prefix", handlers.ListI18nArticles())
+		}
+	}
 
 	return r
 }
