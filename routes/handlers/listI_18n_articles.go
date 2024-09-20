@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/oliveagle/jsonpath"
 	"github.com/sirupsen/logrus"
@@ -16,10 +15,10 @@ func ListI18nArticles() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		lng := c.Param("lng")
 		nsPrefix := c.Param("ns_prefix")
-		collection := mongodb.GetCollection("homepage", "i18n")
+		collection := mongodb.GetCollection("i18n", lng)
 
-		documentID := fmt.Sprintf("^%s-%s\\.", lng, nsPrefix)
-		filter := bson.M{"_id": bson.M{"$regex": documentID}}
+		//documentID := fmt.Sprintf("^%s-%s\\.", lng, nsPrefix)
+		filter := bson.M{"_id": bson.M{"$regex": nsPrefix}}
 		projection := bson.M{"_id": 0, "content.title": 1}
 
 		cursor, err := collection.Find(context.TODO(), filter, options.Find().SetProjection(projection))

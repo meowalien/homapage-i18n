@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,22 +14,20 @@ func DeleteI18n() gin.HandlerFunc {
 		lng := c.Param("lng")
 		ns := c.Param("ns")
 
-		collection := mongodb.GetCollection("homepage", "i18n")
-
-		documentID := fmt.Sprintf("%s-%s", lng, ns)
+		collection := mongodb.GetCollection("i18n", lng)
 
 		// Delete the specific document by its _id
-		filter := bson.M{"_id": documentID}
+		filter := bson.M{"_id": ns}
 
 		result, err := collection.DeleteOne(context.TODO(), filter)
 		if err != nil {
-			logrus.Errorf("Failed to delete document %s: %v", documentID, err)
+			logrus.Errorf("Failed to delete document %s: %v", ns, err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete document"})
 			return
 		}
 
 		if result.DeletedCount == 0 {
-			logrus.Infof("No document found with id %s", documentID)
+			logrus.Infof("No document found with id %s", ns)
 			c.JSON(http.StatusNotFound, gin.H{"error": "Document not found"})
 			return
 		}

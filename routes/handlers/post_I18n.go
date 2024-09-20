@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,9 +16,9 @@ func PostI18n() gin.HandlerFunc {
 		lng := c.Param("lng")
 		ns := c.Param("ns")
 
-		collection := mongodb.GetCollection("homepage", "i18n")
+		collection := mongodb.GetCollection("i18n", lng)
 
-		documentID := fmt.Sprintf("%s-%s", lng, ns)
+		//documentID := fmt.Sprintf("%s-%s", lng, ns)
 
 		var jsonData map[string]interface{}
 		if err := c.BindJSON(&jsonData); err != nil {
@@ -30,20 +29,21 @@ func PostI18n() gin.HandlerFunc {
 
 		// Remove _id field if it exists to avoid the immutable field error
 		if _, ok := jsonData["_id"]; ok {
-			delete(jsonData, "_id")
+			c.JSON(http.StatusBadRequest, gin.H{"error": "_id field is immutable"})
+			return
 		}
 
 		// Wrap jsonData inside "content" field
 		updateData := bson.M{"content": jsonData}
 
 		// Prepare the filter and update for the upsert operation
-		filter := bson.M{"_id": documentID}
+		filter := bson.M{"_id": ns}
 		update := bson.M{"$set": updateData}
 		opts := options.Update().SetUpsert(true)
 
 		updateResult, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 		if err != nil {
-			logrus.Errorf("Failed to update data in document %s: %v", documentID, err)
+			logrus.Errorf("Failed to update data in document %s: %v", ns, err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update data"})
 			return
 		}
