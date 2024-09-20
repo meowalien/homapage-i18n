@@ -69,14 +69,17 @@ func insertJSONFiles(collectionName, dirPath string) error {
 			}
 
 			// Convert the byte data to a map for MongoDB insertion
-			var document bson.M
-			if err := json.Unmarshal(byteValue, &document); err != nil {
+			var documentContent bson.M
+			if err := json.Unmarshal(byteValue, &documentContent); err != nil {
 				return err
 			}
 
-			document["_id"] = fileNameWithoutExt
+			var document = bson.M{}
 
-			// Insert the document into the collection
+			document["_id"] = fileNameWithoutExt
+			document["content"] = documentContent
+
+			// Insert the documentContent into the collection
 			_, err = collection.InsertOne(context.TODO(), document)
 			if err != nil {
 				return err
