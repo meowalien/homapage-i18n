@@ -30,12 +30,16 @@ echo "Creating builder $BUILDER_NAME"
 
 docker buildx create --name "$BUILDER_NAME" --config "$TEMP_CONFIG_FILE" --use --platform "$PLATFORMS" > /dev/null
 
-echo "Building $IMAGE_NAME"
+LATEST_IMAGE_TAG="$IMAGE_NAME:latest"
+BRANCH_IMAGE_TAG="$IMAGE_NAME:$REF_NAME"
+HASH__IMAGE_TAG="$IMAGE_NAME:$SHORT_SHA"
+
+printf "Building images:\n%s\n%s\n%s\n" "$LATEST_IMAGE_TAG" "$BRANCH_IMAGE_TAG" "$HASH__IMAGE_TAG"
 
 docker buildx build \
           --builder "$BUILDER_NAME" \
           --platform "$PLATFORMS" \
-          -t "$IMAGE_NAME:latest" \
-          -t "$IMAGE_NAME:$REF_NAME" \
-          -t "$IMAGE_NAME:$SHORT_SHA" \
+          -t "$LATEST_IMAGE_TAG" \
+          -t "$BRANCH_IMAGE_TAG" \
+          -t "$HASH__IMAGE_TAG" \
           --push .
