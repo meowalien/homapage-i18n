@@ -1,0 +1,126 @@
+{
+  "name": "Jacky Li",
+  "gender": "Male",
+  "birthday": "1998-02-01",
+  "lineID": "q45p",
+  "lineID-link": "https://line.me/ti/p/QFISB194CL",
+  "emailContact": "a.meowalien@gmail.com",
+  "jobTitle": "Senior Full-Stack Engineer",
+  "summary": "Summary",
+  "summary_content": "I am a software expert known for my practicality, innovation, and rapid learning ability. With comprehensive knowledge in software development, I excel in all phases of the development lifecycle.\n\n##### I. Technical Expertise:\n- **Backend & Frontend Development:** Skilled in independently designing and implementing full-stack services.\n- **DevOps:** Proficient in CICD, Kubernetes, and cloud technologies, optimizing and designing efficient development processes.\n- **Clean Code:** Writes concise, efficient, and maintainable code, reducing technical debt.\n\n##### II. Learning and Growth:\n- Strong ability to quickly master new tools, languages, and concepts.\n- Actively self-studies and shares the latest knowledge with the team.\n\n##### III. Practice and Problem-Solving:\n- Passionate about practice, often discovering and resolving hidden issues.\n- Foresees potential problems and alerts the team in advance.\n\n##### IV. Work Attitude and Interests:\n- Enjoys programming and the process of bringing ideas to life.\n- Seeks to work in a company that embraces change and constant progress.",
+  "job_history-title": "Job History",
+  "job_history": [
+    {
+      "time": "2023-09 ~ present",
+      "job_title": "Full-Stack Engineer",
+      "company": "Digital River",
+      "content": "In the EPA Team, I maintained internal systems and developed specialized tools for various departments. I collaborated with colleagues across different countries and time zones, and designed and implemented the following projects:\n\n##### 1. Credit Card Deduction Success Rate Visualization Tool:\nDeveloped a platform for the Billing Team and customers to perform multi-dimensional cross-analysis. This tool helps identify key factors affecting credit card deduction success rates, such as region, time, ML models used, user status, and product type.\n\n##### 2. Working Hours Statistics Tool:\nCreated an automated tool for the Accounting Team to calculate working hours for CapEx projects, replacing a manual, time-consuming process, improving efficiency, and reducing error rates.\n\n##### 3. EPA Dashboard:\nImplemented a real-time monitoring dashboard for various company services, integrating information into a single page for streamlined oversight."
+    },
+    {
+      "time": "2022-07 ~ 2023-09",
+      "job_title": "Senior Backend Engineer",
+      "company": "Paradise-Soft",
+      "content": "During my tenure in the company, I achieved the following substantial accomplishments in addition to completing assigned tasks:\n\n##### 1. Core Business Logic Refactoring:\nEnhanced the concurrent load capacity by over 500% through refactoring.\n\n##### 2. Microservice Architecture:\nImplemented microservices for core business logic, allowing dispersed expansion of services.\n\n##### 3. Kubernetes Environment:\nIndependently deployed a complete on-premises Kubernetes environment and developed corresponding operational tools.\n\n##### 4. Cloud-Native Development:\nPromoted cloud-native development processes and designed and implemented continuous integration (CI) workflows.\n\n##### 5. Issue Resolution:\nResolved numerous issues in the testing, deployment, and delivery phases, significantly reducing the development and testing cycle time.\n\n##### 6. Distributed Stress-Testing Tool:\nCreated a distributed stress-testing tool capable of unlimited expansion.\n\n##### 7. Service Status Snapshot Sidecar:\nDeveloped a core service status snapshot sidecar service."
+    },
+    {
+      "time": "2020-09 ~ 2022-07",
+      "job_title": "Backend Engineer",
+      "company": "Joy Games Ltd.",
+      "content": "During my tenure, I was involved in requirement consolidation, technical architecture design, code implementation, as well as the complete processes of deployment, maintenance, and upgrading for all new projects.\n\n##### 1. Technology Integration:\nProactively pursued learning new technologies, incorporating Docker and CI/CD into new products, reducing repetitive labor by over 50%.\n\n##### 2. Project Accomplishments:\nSuccessfully fulfilled requirements related to member systems, financial transactions, trading, authorization, in-game settlement, and player location tracking."
+    },
+    {
+      "time": "2018-04 ~ 2020-06",
+      "job_title": "IT&PM&Salesman",
+      "company": "Co-Action Corporation",
+      "content": "During my tenure as the company’s IT specialist, I utilized my software expertise to make the following significant contributions:\n\n##### 1. Automated Advertising Email System:\nIndependently developed a system that generated 100% more new customer leads each month compared to previous methods.\n\n##### 2. Internal Search Engine:\nMerged historical customer data with Neo4j and MySQL to create a search engine that facilitates the identification of prospective clients.\n\n##### 3. Web Scraping for Potential Customers:\nEmployed web scraping techniques to discover tens of thousands of potential customers, tripling the efficiency in locating prospects and increasing the company’s revenue by 40%."
+    }
+  ],
+  "skills-title": "Skills",
+  "skills": [
+    {
+      "name": "Backend",
+      "level": "Expert",
+      "skills": [
+        "Golang",
+        "Python",
+        "Java",
+        "Gorm",
+        "GRPC",
+        "RabbitMQ",
+        "BashScript",
+        "RESTful API",
+        "WebSocket",
+        "Nats"
+      ]
+    },
+    {
+      "name": "Frontend",
+      "level": "Expert",
+      "skills": [
+        "TypeScript",
+        "Nodejs",
+        "Vue.js",
+        "Vite",
+        "HTML / CSS / Javascript",
+        "SCSS",
+        "ReactJS",
+        "Next.js",
+        "Figma"
+      ]
+    },
+    {
+      "name": "SQL Database",
+      "level": "Expert",
+      "skills": [
+        "MySQL",
+        "Maria"
+      ]
+    },
+    {
+      "name": "No SQL Database",
+      "level": "Expert",
+      "skills": [
+        "Mongodb",
+        "Neo4J",
+        "Redis",
+        "Elasticsearch"
+      ]
+    },
+    {
+      "name": "CI/CD",
+      "level": "Expert",
+      "skills": [
+        "Jenkins",
+        "ArgoCD",
+        "Gitlab-ci",
+        "Github Actions"
+      ]
+    },
+    {
+      "name": "Container & Cloud",
+      "level": "Expert",
+      "skills": [
+        "GCP",
+        "Docker",
+        "Kubernetes",
+        "Helm",
+        "Traefik"
+      ]
+    }
+  ],
+  "languages-title": "Languages",
+  "languages": [
+    {
+      "name": "Chinese",
+      "level": "Native"
+    },
+    {
+      "name": "English",
+      "level": "Professional proficiency"
+    },
+    {
+      "name": "日本語",
+      "level": "Basic"
+    }
+  ]
+}

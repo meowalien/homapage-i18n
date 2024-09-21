@@ -54,6 +54,12 @@ func insertJSONFiles(collectionName, dirPath string) error {
 		if ext == ".json" {
 			fileNameWithoutExt := file.Name()[:len(file.Name())-len(ext)]
 
+			// delete the document with the same _id
+			_, err := collection.DeleteOne(context.TODO(), bson.M{"_id": fileNameWithoutExt})
+			if err != nil {
+				return err
+			}
+
 			filePath := filepath.Join(dirPath, file.Name())
 
 			// Open and read the JSON file
