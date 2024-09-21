@@ -3,16 +3,13 @@ package mongodb
 import (
 	"context"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var client *mongo.Client
 
-func ConnectDB() {
-	uri := viper.GetString("mongodb.uri")
-
+func ConnectDB(uri string) {
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)

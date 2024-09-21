@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"homapage-i18n/config"
 	"homapage-i18n/mongodb"
 	"io"
 	"log"
@@ -14,8 +13,14 @@ import (
 )
 
 func main() {
-	config.InitConfig()
-	mongodb.ConnectDB()
+	// Read the MongoDB URI from the environment variable
+	mongoURI := os.Getenv("MONGODB_URI")
+	if mongoURI == "" {
+		log.Fatal("MONGODB_URI environment variable is not set")
+	}
+
+	// Connect to MongoDB using the URI
+	mongodb.ConnectDB(mongoURI)
 
 	// Iterate over all folders under i18n directory
 	rootDir := "./i18n"

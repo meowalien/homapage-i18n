@@ -16,7 +16,7 @@ func main() {
 	defer logrus.Info("Main exiting")
 	config.InitConfig()
 	log.InitLogger()
-	mongodb.ConnectDB()
+	mongodb.ConnectDB(viper.GetString("mongodb.uri"))
 	defer mongodb.DisconnectDB()
 	token.InitVerifyKey(viper.GetString("token.publicKeyPath"))
 
